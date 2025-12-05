@@ -1,3 +1,5 @@
+import java.awt.*;
+
 // java
 public final class Rules {
     private Rules() {
@@ -18,5 +20,20 @@ public final class Rules {
             if (((r1 + c1) % 2) == 0 && ((r2 + c2) % 2) == 0) return true;
         }
         return false;
+    }
+
+    public static void checkGanh(Color[][] board, Color currentPlayer, int r, int c) {
+        if (r > 0 && r < board.length - 1) {
+            if (board[r + 1][c] != currentPlayer && board[r - 1][c] != currentPlayer && board[r + 1][c] != null && board[r - 1][c] != null) {
+                board[r + 1][c] = currentPlayer;
+                board[r - 1][c] = currentPlayer;
+            }
+        }
+        if (c > 0 && c < board.length - 1) {
+            if (board[r][c + 1] != currentPlayer && board[r][c - 1] != currentPlayer && board[r][c + 1] != null && board[r][c - 1] != null) {
+                board[r][c + 1] = currentPlayer;
+                board[r][c - 1] = currentPlayer;
+            }
+        }
     }
 }

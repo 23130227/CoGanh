@@ -1,8 +1,9 @@
 // java
+
 import java.awt.Color;
 
 public class GameController {
-    public enum PlayMode { HUMAN, AI }
+    public enum PlayMode {HUMAN, AI}
 
     private final GameState state;
     private PlayMode playMode = PlayMode.HUMAN;
@@ -14,12 +15,25 @@ public class GameController {
         this.state = state;
     }
 
-    public GameState getState() { return state; }
-    public PlayMode getPlayMode() { return playMode; }
-    public void setPlayMode(PlayMode mode) { this.playMode = mode; }
+    public GameState getState() {
+        return state;
+    }
 
-    public int getSelectedRow() { return selectedRow; }
-    public int getSelectedCol() { return selectedCol; }
+    public PlayMode getPlayMode() {
+        return playMode;
+    }
+
+    public void setPlayMode(PlayMode mode) {
+        this.playMode = mode;
+    }
+
+    public int getSelectedRow() {
+        return selectedRow;
+    }
+
+    public int getSelectedCol() {
+        return selectedCol;
+    }
 
     public void handlePress(int row, int col) {
         if (row < 0 || row >= GameState.SIZE || col < 0 || col >= GameState.SIZE) return;
@@ -52,6 +66,8 @@ public class GameController {
         if (board[row][col] == null && Rules.isAdjacentAndConnected(selectedRow, selectedCol, row, col)) {
             board[row][col] = board[selectedRow][selectedCol];
             board[selectedRow][selectedCol] = null;
+
+            Rules.checkGanh(state.getBoard(), currentPlayer, row, col);
 
             selectedRow = -1;
             selectedCol = -1;
