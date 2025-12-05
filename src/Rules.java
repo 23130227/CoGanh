@@ -35,5 +35,19 @@ public final class Rules {
                 board[r][c - 1] = currentPlayer;
             }
         }
+        if (r > 0 && r < board.length - 1 && c > 0 && c < board.length - 1) {
+            if (board[r + 1][c + 1] != currentPlayer && board[r - 1][c - 1] != currentPlayer && board[r + 1][c + 1] != null && board[r - 1][c - 1] != null) {
+                if ((r + 1 + c + 1) % 2 == 0 && ((r - 1 + c - 1) % 2 == 0)) {
+                    board[r + 1][c + 1] = currentPlayer;
+                    board[r - 1][c - 1] = currentPlayer;
+                }
+            }
+            if (board[r - 1][c + 1] != currentPlayer && board[r + 1][c - 1] != currentPlayer && board[r - 1][c + 1] != null && board[r + 1][c - 1] != null) {
+                if ((r - 1 + c + 1) % 2 == 0 && ((r + 1 + c - 1) % 2 == 0)) {
+                    board[r - 1][c + 1] = currentPlayer;
+                    board[r + 1][c - 1] = currentPlayer;
+                }
+            }
+        }
     }
 }
