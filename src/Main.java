@@ -7,6 +7,8 @@ public class Main {
             GameState state = new GameState();
             GameController controller = new GameController(state);
             View boardView = new View(state, controller);
+            controller.setView(boardView);
+
 
             JFrame f = new JFrame("Cờ Gánh – Move along lines only");
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -14,7 +16,7 @@ public class Main {
             JPanel root = new JPanel(new BorderLayout());
             root.add(boardView, BorderLayout.CENTER);
 
-            JLabel modeLabel = new JLabel("Chế độ: " +
+            JLabel modeLabel = new JLabel(" Chế độ: " +
                     (controller.getPlayMode() == GameController.PlayMode.HUMAN ? "Chơi với người" : "Chơi với máy"));
             modeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
