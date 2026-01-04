@@ -7,7 +7,14 @@ public final class Rules {
     private Rules() {
     }
 
-    // Kiểm tra tính liền kề và có đường nối (đường chéo hoặc ngang dọc)
+    /**
+     * Kiểm tra tính liền kề và có đường nối (đường chéo hoặc ngang dọc)
+     * @param r1
+     * @param c1
+     * @param r2
+     * @param c2
+     * @return
+     */
     public static boolean isAdjacentAndConnected(int r1, int c1, int r2, int c2) {
         int dr = Math.abs(r1 - r2);
         int dc = Math.abs(c1 - c2);
@@ -17,39 +24,43 @@ public final class Rules {
 
         // Trường hợp đi chéo
         if (dr == 1 && dc == 1) {
-            // Logic bàn cờ gánh: Chỉ những ô có tổng (r+c) chẵn mới có đường chéo
-            // Ví dụ: (0,0) -> chẵn (có chéo), (0,1) -> lẻ (không chéo)
             if (((r1 + c1) % 2) == 0 && ((r2 + c2) % 2) == 0) return true;
         }
         return false;
     }
 
-    // Logic kiểm tra Gánh (đổi màu quân đối phương)
+    /**
+     * kiểm tra Gánh (đổi màu quân đối phương)
+     * @param board
+     * @param currentPlayer
+     * @param r
+     * @param c
+     */
     public static void checkGanh(Color[][] board, Color currentPlayer, int r, int c) {
-        // 1. Gánh dọc
+        //  Gánh dọc
         if (r > 0 && r < board.length - 1) {
             if (board[r + 1][c] != currentPlayer && board[r - 1][c] != currentPlayer && board[r + 1][c] != null && board[r - 1][c] != null) {
                 board[r + 1][c] = currentPlayer;
                 board[r - 1][c] = currentPlayer;
             }
         }
-        // 2. Gánh ngang
+        //  Gánh ngang
         if (c > 0 && c < board.length - 1) {
             if (board[r][c + 1] != currentPlayer && board[r][c - 1] != currentPlayer && board[r][c + 1] != null && board[r][c - 1] != null) {
                 board[r][c + 1] = currentPlayer;
                 board[r][c - 1] = currentPlayer;
             }
         }
-        // 3. Gánh chéo
+        //  Gánh chéo
         if (r > 0 && r < board.length - 1 && c > 0 && c < board.length - 1) {
-            // Chéo chính (\)
+            // Chéo chính
             if (board[r + 1][c + 1] != currentPlayer && board[r - 1][c - 1] != currentPlayer && board[r + 1][c + 1] != null && board[r - 1][c - 1] != null) {
                 if ((r + 1 + c + 1) % 2 == 0 && ((r - 1 + c - 1) % 2 == 0)) {
                     board[r + 1][c + 1] = currentPlayer;
                     board[r - 1][c - 1] = currentPlayer;
                 }
             }
-            // Chéo phụ (/)
+            // Chéo phụ
             if (board[r - 1][c + 1] != currentPlayer && board[r + 1][c - 1] != currentPlayer && board[r - 1][c + 1] != null && board[r + 1][c - 1] != null) {
                 if ((r - 1 + c + 1) % 2 == 0 && ((r + 1 + c - 1) % 2 == 0)) {
                     board[r - 1][c + 1] = currentPlayer;
@@ -60,8 +71,9 @@ public final class Rules {
     }
 
     /**
-     * Hàm mới: Tìm tất cả nước đi hợp lệ cho người chơi hiện tại
-     * (Cần thiết cho AI)
+     * Tìm tất cả nước đi hợp lệ cho người chơi hiện tại
+     * @param state
+     * @return
      */
     public static List<Move> generateValidMoves(GameState state) {
         List<Move> moves = new ArrayList<>();

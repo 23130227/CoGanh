@@ -1,5 +1,3 @@
-// File: GameController.java
-
 import java.awt.Color;
 import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane; // Thư viện để hiện bảng thông báo
@@ -42,7 +40,7 @@ public class GameController {
     public int getSelectedCol() { return selectedCol; }
 
     public void handlePress(int row, int col) {
-        // Chặn click chuột khi AI đang nghĩ hoặc game đã kết thúc
+
         if (playMode == PlayMode.AI && state.getCurrentPlayer() == Color.RED) return;
         if (state.isGameOver()) return;
 
@@ -74,7 +72,7 @@ public class GameController {
             return;
         }
 
-        // --- NGƯỜI CHƠI DI CHUYỂN ---
+        // xử lý người chơi di chuyển quân
         if (board[row][col] == null && Rules.isAdjacentAndConnected(selectedRow, selectedCol, row, col)) {
             Move move = new Move(selectedRow, selectedCol, row, col);
             state.applyMove(move);
@@ -84,11 +82,10 @@ public class GameController {
 
             if (view != null) view.repaint();
 
-            // 1. KIỂM TRA THẮNG NGAY SAU KHI NGƯỜI ĐI
-            // Nếu thắng rồi thì dừng luôn, không cho AI đi nữa
+            // Kiểm tra có ai thắng chưa nếu thắng rồi kết thúc game luôn
             if (checkGameOver()) return;
 
-            // Nếu chưa thắng -> Đến lượt AI
+            // Nếu chưa thắng Đến lượt AI đi, nếu như ở đây là chế độ chơi với AI
             if (playMode == PlayMode.AI && state.getCurrentPlayer() == Color.RED) {
                 makeAIMove();
             }
@@ -98,7 +95,7 @@ public class GameController {
     private void makeAIMove() {
         new Thread(() -> {
             try {
-                Thread.sleep(500); // Nghỉ chút cho tự nhiên
+                Thread.sleep(500);
 
                 Move bestMove = aiPlayer.findBestMove(state);
 
@@ -108,7 +105,7 @@ public class GameController {
                     SwingUtilities.invokeLater(() -> {
                         if (view != null) view.repaint();
 
-                        // 2. KIỂM TRA THẮNG NGAY SAU KHI MÁY ĐI
+                        // kiểm tra máy có thắng sau khi nó đi hay không
                         checkGameOver();
                     });
                 }
@@ -119,8 +116,8 @@ public class GameController {
     }
 
     /**
-     * HÀM MỚI: Kiểm tra game over và hiện JOptionPane
-     * Trả về true nếu game đã kết thúc
+     * thực hiện kiểm tra game đã kết thúc chưa
+     * @return
      */
     private boolean checkGameOver() {
         if (state.isGameOver()) {
@@ -144,10 +141,10 @@ public class GameController {
             );
 
             if (option == JOptionPane.YES_OPTION) {
-                state.reset(); // Reset bàn cờ
-                if (view != null) view.repaint(); // Vẽ lại bàn cờ mới
+                state.reset();
+                if (view != null) view.repaint();
             } else {
-                System.exit(0); // Thoát game
+                System.exit(0);
             }
             return true;
         }

@@ -1,4 +1,3 @@
-// java
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -21,7 +20,9 @@ public class View extends JPanel {
                 2 * MARGIN + (GameState.SIZE - 1) * CELL_SIZE
         ));
         setBackground(Color.WHITE);
-
+/**
+ * Xử lý sự kiện nhấn chuột
+ */
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -33,6 +34,10 @@ public class View extends JPanel {
         });
     }
 
+    /**
+     * thực hiện vẽ bàn cờ và các quân cờ, có các nút điều khiển và hiển thị các thông tin cần thiết
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -91,6 +96,12 @@ public class View extends JPanel {
         g2.drawString("Mode: " + (controller.getPlayMode() == GameController.PlayMode.HUMAN ? "Human vs Human" : "Human vs AI"), 10, 32);
     }
 
+    /**
+     * thực hiện vẽ một quân cờ tại vị trí cụ thể trên bàn cờ
+     * @param g2
+     * @param row
+     * @param col
+     */
     private void drawPiece(Graphics2D g2, int row, int col) {
         int x = MARGIN + col * CELL_SIZE;
         int y = MARGIN + row * CELL_SIZE;

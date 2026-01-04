@@ -5,7 +5,7 @@ import java.util.List;
 
 public class PlayerAI {
     private static final int MAX_DEPTH = 4;
-
+    private long nodeCount=0;
     private static final int[][] POSITION_WEIGHTS = {
             {1, 1, 1, 1, 1},
             {1, 2, 2, 2, 1},
@@ -14,23 +14,30 @@ public class PlayerAI {
             {1, 1, 1, 1, 1}
     };
 
+    /**
+     * thực hiện tìm nước đi tốt nhất sử dụng thuật toán Minimax với cắt tỉa Alpha-Beta
+     * @param currentState
+     * @return
+     */
     public Move findBestMove(GameState currentState) {
+        nodeCount=0;
+        long startTime = System.currentTimeMillis();
+
         List<Move> validMoves = Rules.generateValidMoves(currentState);
         Collections.shuffle(validMoves);
 
         Move bestMove = null;
         int temp = -999999999;
 
-        // --- THÊM ALPHA BETA ---
-        int alpha = Integer.MIN_VALUE; // Khởi tạo Alpha
-        int beta = Integer.MAX_VALUE;  // Khởi tạo Beta
+
+        int alpha = Integer.MIN_VALUE;
+        int beta = Integer.MAX_VALUE;
 
         for (Move move : validMoves) {
             GameState clonedState = currentState.copy();
             clonedState.applyMove(move);
 
-            // --- THÊM ALPHA BETA ---
-            // Truyền alpha và beta vào hàm đệ quy
+
             int value = minimax(false, clonedState, MAX_DEPTH - 1, alpha, beta);
 
             if (value > temp) {
@@ -38,18 +45,36 @@ public class PlayerAI {
                 bestMove = move;
             }
 
-            // --- THÊM ALPHA BETA ---
-            // Cập nhật Alpha tại node gốc để tối ưu cho các nhánh sau
+
             alpha = Math.max(alpha, temp);
         }
+        /**
+         * thực hiện in ra màn hình báo cáo kết quả sau khi AI suy nghĩ xong
+         */
+        long endTime = System.currentTimeMillis();
+        System.out.println("=========================================");
+        System.out.println("[ALPHA-BETA REPORT]");
+        System.out.println("- Độ sâu (Depth): " + MAX_DEPTH);
+        System.out.println("- Số trạng thái đã duyệt (Nodes): " + nodeCount);
+        System.out.println("- Thời gian suy nghĩ: " + (endTime - startTime) + " ms");
+        System.out.println("=========================================");
         return bestMove;
     }
 
-    // --- THÊM ALPHA BETA ---
-    // Thêm tham số int alpha, int beta vào hàm
+    /**
+     * thực hiện thuật toán Minimax với cắt tỉa Alpha-Beta
+     * @param maxmin
+     * @param state
+     * @param depth
+     * @param alpha
+     * @param beta
+     * @return
+     */
+
     private int minimax(boolean maxmin, GameState state, int depth, int alpha, int beta) {
+       nodeCount++;
         if (depth == 0 || state.isGameOver()) {
-            return evaluate(state);
+            return heuristic(state);
         }
 
         List<Move> validMoves = Rules.generateValidMoves(state);
@@ -65,17 +90,13 @@ public class PlayerAI {
                 GameState newState = state.copy();
                 newState.applyMove(move);
 
-                // --- THÊM ALPHA BETA ---
-                // Truyền alpha, beta xuống cấp dưới
                 int value = minimax(false, newState, depth - 1, alpha, beta);
 
                 if (value > temp) {
                     temp = value;
                 }
-
-                // --- THÊM ALPHA BETA ---
-                alpha = Math.max(alpha, temp); // Cập nhật Alpha (giá trị tốt nhất cho MAX)
-                if (beta <= alpha) break;      // Cắt tỉa: Nếu Beta <= Alpha thì dừng nhánh này
+                alpha = Math.max(alpha, temp);
+                if (beta <= alpha) break;
             }
             return temp;
 
@@ -86,23 +107,27 @@ public class PlayerAI {
                 GameState newState = state.copy();
                 newState.applyMove(move);
 
-                // --- THÊM ALPHA BETA ---
-                // Truyền alpha, beta xuống cấp dưới
+
+
                 int value = minimax(true, newState, depth - 1, alpha, beta);
 
                 if (value < temp) {
                     temp = value;
                 }
 
-                // --- THÊM ALPHA BETA ---
-                beta = Math.min(beta, temp); // Cập nhật Beta (giá trị tốt nhất cho MIN)
-                if (beta <= alpha) break;    // Cắt tỉa: Nếu Beta <= Alpha thì dừng nhánh này
+                beta = Math.min(beta, temp);
+                if (beta <= alpha) break;
             }
             return temp;
         }
     }
 
-    private int evaluate(GameState state) {
+    /**
+     * hàm đánh giá heuristic cho trạng thái trò chơi
+     * @param state
+     * @return
+     */
+    private int heuristic(GameState state) {
         Color winner = state.getWinner();
         if (winner == Color.RED) return 100000;
         if (winner == Color.BLUE) return -100000;

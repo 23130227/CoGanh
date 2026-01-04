@@ -71,14 +71,15 @@ public class GameState {
     }
 
     /**
-     * Kiểm tra game kết thúc:
-     * 1. Hết quân.
-     * 2. Hoặc còn quân nhưng bị vây kín (không còn nước đi).
+     * kiểm tra game kết thúc hay chưa :
+     * 1 kết thúc khi một người chơi không còn quân cờ nào trên bàn
+     * 2 kết thúc do bị vây: Nếu đến lượt ai mà người đó không có nước đi hợp lệ
+     * @return
      */
     public boolean isGameOver() {
         if (countPieces(Color.BLUE) == 0 || countPieces(Color.RED) == 0) return true;
 
-        // Kiểm tra Vây: Nếu đến lượt ai mà người đó không có nước đi -> Game Over
+        // không còn nước đi hợp lệ tương đương với vây
         if (Rules.generateValidMoves(this).isEmpty()) {
             return true;
         }
@@ -86,6 +87,10 @@ public class GameState {
         return false;
     }
 
+    /**
+     * Xác định người chơi thắng cuộc
+     * @return
+     */
     public Color getWinner() {
         int blueCount = countPieces(Color.BLUE);
         int redCount = countPieces(Color.RED);
@@ -93,7 +98,7 @@ public class GameState {
         if (blueCount == 0) return Color.RED;
         if (redCount == 0) return Color.BLUE;
 
-        // Xử lý thắng do Vây
+
         if (Rules.generateValidMoves(this).isEmpty()) {
             // Nếu đến lượt Blue mà Blue không đi được -> Red thắng
             if (currentPlayer == Color.BLUE) return Color.RED;
@@ -103,9 +108,10 @@ public class GameState {
 
         return null;
     }
+
     /**
-     * Hàm mới: Thực hiện logic di chuyển quân cờ và gánh
-     * Hàm này dùng chung cho cả Controller và AI
+     * thực hiện di chuyển quân và cập nhật trạng thái bàn cờ, có cả gánh
+     * @param move
      */
     public void applyMove(Move move) {
         int r1 = move.getFromRow();
@@ -117,7 +123,7 @@ public class GameState {
         board[r2][c2] = board[r1][c1];
         board[r1][c1] = null;
 
-        // Kiểm tra Gánh (Dùng lại hàm Rules bạn đã có)
+        // Kiểm tra Gánh
         Rules.checkGanh(board, currentPlayer, r2, c2);
 
         // Đổi lượt
